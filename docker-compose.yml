@@ -1,0 +1,166 @@
+version: '3.8'
+
+services:
+  # Redis for caching and session storage
+  redis:
+    image: redis:7-alpine
+    container_name: shirts-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    command: redis-server --appendonly yes
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 30s
+      timeout: 3s
+      retries: 5
+
+  # Backend API service
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: shirts-backend
+    restart: unless-stopped
+    ports:
+      - "3001:3001"
+    environment:
+      - NODE_ENV=production
+      - PORT=3001
+      - REDIS_URL=redis://redis:6379
+      - VECTOR_DB_PATH=/app/data/vector_db
+      - UPLOAD_DIR=/app/uploads
+      - LOG_LEVEL=info
+      # Add your API keys here or use a .env file
+      - GEMINI_API_KEY=${GEMINI_API_KEY:-your_gemini_api_key_here}
+      - OPENAI_API_KEY=${OPENAI_API_KEY:-your_openai_api_key_here}
+      - JWT_SECRET=${JWT_SECRET:-your_jwt_secret_here}
+      - API_RATE_LIMIT=${API_RATE_LIMIT:-100}
+      - FRONTEND_URL=http://localhost:3000
+    volumes:
+      - backend_uploads:/app/uploads
+      - backend_data:/app/data
+      - backend_logs:/app/logs
+    depends_on:
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "node", "-e", "require('http').get('http://localhost:3001/health', (res) => { process.exit(res.statusCode === 200 ? 0 : 1) })"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # Frontend web application
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        - VITE_API_URL=http://localhost:3001/api
+        - VITE_SOCKET_URL=http://localhost:3001
+    container_name: shirts-frontend
+    restart: unless-stopped
+    ports:
+      - "3000:80"
+    depends_on:
+      backend:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:80/health"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+
+  # Optional: PostgreSQL database for production use
+  # Uncomment if you want to replace in-memory storage with a real database
+  # postgres:
+  #   image: postgres:15-alpine
+  #   container_name: shirts-postgres
+  #   restart: unless-stopped
+  #   environment:
+  #     - POSTGRES_DB=shirts_legal
+  #     - POSTGRES_USER=shirts_user
+  #     - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-shirts_password}
+  #   volumes:
+  #     - postgres_data:/var/lib/postgresql/data
+  #   ports:
+  #     - "5432:5432"
+  #   healthcheck:
+  #     test: ["CMD-SHELL", "pg_isready -U shirts_user -d shirts_legal"]
+  #     interval: 30s
+  #     timeout: 5s
+  #     retries: 5
+
+  # Optional: Elasticsearch for advanced document search
+  # Uncomment if you want to use Elasticsearch instead of the basic vector store
+  # elasticsearch:
+  #   image: elasticsearch:8.9.0
+  #   container_name: shirts-elasticsearch
+  #   restart: unless-stopped
+  #   environment:
+  #     - discovery.type=single-node
+  #     - xpack.security.enabled=false
+  #     - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+  #   volumes:
+  #     - elasticsearch_data:/usr/share/elasticsearch/data
+  #   ports:
+  #     - "9200:9200"
+  #   healthcheck:
+  #     test: ["CMD-SHELL", "curl -f http://localhost:9200/_cluster/health || exit 1"]
+  #     interval: 30s
+  #     timeout: 5s
+  #     retries: 10
+
+  # Optional: Monitoring with Prometheus and Grafana
+  # prometheus:
+  #   image: prom/prometheus:latest
+  #   container_name: shirts-prometheus
+  #   restart: unless-stopped
+  #   ports:
+  #     - "9090:9090"
+  #   volumes:
+  #     - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
+  #     - prometheus_data:/prometheus
+  #   command:
+  #     - '--config.file=/etc/prometheus/prometheus.yml'
+  #     - '--storage.tsdb.path=/prometheus'
+  #     - '--web.console.libraries=/etc/prometheus/console_libraries'
+  #     - '--web.console.templates=/etc/prometheus/consoles'
+
+  # grafana:
+  #   image: grafana/grafana:latest
+  #   container_name: shirts-grafana
+  #   restart: unless-stopped
+  #   ports:
+  #     - "3001:3000"
+  #   environment:
+  #     - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_PASSWORD:-admin}
+  #   volumes:
+  #     - grafana_data:/var/lib/grafana
+  #   depends_on:
+  #     - prometheus
+
+volumes:
+  redis_data:
+    driver: local
+  backend_uploads:
+    driver: local
+  backend_data:
+    driver: local
+  backend_logs:
+    driver: local
+  # postgres_data:
+  #   driver: local
+  # elasticsearch_data:
+  #   driver: local
+  # prometheus_data:
+  #   driver: local
+  # grafana_data:
+  #   driver: local
+
+networks:
+  default:
+    name: shirts-network
