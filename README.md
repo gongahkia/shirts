@@ -2,7 +2,7 @@
 
 # `Shirts`
 
-`Shirts` is an AI Agent-based Legal Workflow Assistant that automates sophisticated legal processes through intelligent multi-agent coordination and Retrieval-Augmented Generation (RAG) technology.
+AI Agent-based Legal Workflow Assistant that automates legal processes through intelligent [multi-agent coordination](#architecture) and [RAG](#architecture) technology.
 
 ## Stack
 
@@ -12,10 +12,6 @@
 * *Document Processing*: [PDF-lib](https://pdf-lib.js.org/), [DOCX](https://docx.js.org/)
 * *Caching*: [Redis](https://redis.io/)
 * *Package*: [Docker](https://www.docker.com/)
-
-## Screenshot
-
-Coming soon - screenshots will be added upon deployment.
 
 ## Usage
 
@@ -118,7 +114,7 @@ For support, please [open an issue](https://github.com/gongahkia/shirts/issues) 
 
 ## Reference
 
-The name `Shirts` is in reference to the legal drama TV series [Suits](https://en.wikipedia.org/wiki/Suits_(American_TV_series)), which follows talented college dropout Mike Ross who starts working as a law associate for Harvey Specter despite never attending law school.
+The name `Shirts` is in reference to the legal drama TV series [Suits](https://suits.fandom.com/wiki/Suits_Wiki), which follows talented college dropout [Mike Ross](https://suits.fandom.com/wiki/Mike_Ross) who starts working as a law associate for [Harvey Specter](https://suits.fandom.com/wiki/Harvey_Specter) despite never attending law school.
 
 ## Legal
 
