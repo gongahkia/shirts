@@ -2,7 +2,7 @@
 
 # `Shirts`
 
-AI Agent-based Legal Workflow Assistant that automates legal processes through intelligent [multi-agent coordination](#architecture) and [RAG](#architecture) technology.
+AI Agent-based Legal Workflow Assistant that automates legal processes through intelligent [multi-agent coordination](#multi-agent-interaction-diagram) and [RAG](#architecture) technology.
 
 ## Stack
 
