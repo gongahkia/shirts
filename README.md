@@ -112,10 +112,6 @@ C4Container
 
 For support, please [open an issue](https://github.com/gongahkia/shirts/issues) on GitHub.
 
-## Reference
-
-The name `Shirts` is in reference to the legal drama TV series [Suits](https://suits.fandom.com/wiki/Suits_Wiki), which follows talented college dropout [Mike Ross](https://suits.fandom.com/wiki/Mike_Ross) who starts working as a law associate for [Harvey Specter](https://suits.fandom.com/wiki/Harvey_Specter) despite never attending law school.
-
 ## Legal
 
 ### Disclaimer
@@ -123,3 +119,11 @@ The name `Shirts` is in reference to the legal drama TV series [Suits](https://s
 This software is provided "as is" without warranty of any kind, express or implied. The developers make no representations or warranties regarding the accuracy, reliability, or completeness of the software. Users assume all risks associated with the use of this application, including but not limited to data loss, security vulnerabilities, or unintended automation of legal processes.
 
 **Important**: This application is for educational and research purposes. Any legal documents or advice generated should be reviewed by qualified legal professionals before use in actual legal proceedings.
+
+## Reference
+
+The name `Shirts` is in reference to the legal drama TV series [Suits](https://suits.fandom.com/wiki/Suits_Wiki), which follows talented college dropout [Mike Ross](https://suits.fandom.com/wiki/Mike_Ross) who starts working as a law associate for [Harvey Specter](https://suits.fandom.com/wiki/Harvey_Specter) despite never attending law school.
+
+<div align="center">
+    <img src="./asset/logo/suits.png" width="75%">
+</div>
