@@ -101,6 +101,65 @@ C4Container
     Rel(rag_system, openai_api, "Generates embeddings", "HTTPS")
 ```
 
+### Multi-Agent Interaction Diagram
+
+```mermaid
+C4Component
+    title Multi-Agent Interaction Diagram for Shirts Legal Workflow
+
+    Person(user, "Legal Professional", "Initiates legal workflows and cases")
+
+    Container_Boundary(agent_orchestrator, "Agent Orchestration System") {
+        Component(workflow_manager, "Workflow Manager", "TypeScript", "Coordinates multi-agent workflows and task distribution")
+        Component(task_scheduler, "Task Scheduler", "TypeScript", "Manages agent task queues and execution order")
+        Component(state_manager, "State Manager", "TypeScript", "Tracks workflow state and agent coordination")
+    }
+
+    Container_Boundary(specialized_agents, "Specialized Legal Agents") {
+        Component(document_agent, "Document Analysis Agent", "AI/TypeScript", "Analyzes legal documents, extracts key information")
+        Component(research_agent, "Legal Research Agent", "AI/TypeScript", "Conducts legal research and precedent analysis")
+        Component(drafting_agent, "Document Drafting Agent", "AI/TypeScript", "Generates legal documents and contracts")
+        Component(review_agent, "Review & Compliance Agent", "AI/TypeScript", "Reviews documents for compliance and accuracy")
+        Component(case_agent, "Case Management Agent", "AI/TypeScript", "Manages case timelines and deadlines")
+    }
+
+    Container_Boundary(support_systems, "Support Systems") {
+        ComponentDb(vector_store, "Vector Store", "Vector Database", "Stores legal document embeddings and knowledge base")
+        ComponentDb(workflow_state, "Workflow State Store", "Redis", "Maintains agent coordination state and task queues")
+        Component(communication_hub, "Inter-Agent Communication", "Socket.io", "Facilitates real-time agent-to-agent communication")
+    }
+
+    System_Ext(ai_services, "AI Services", "Gemini 2 & OpenAI APIs for agent reasoning")
+
+    Rel(user, workflow_manager, "Initiates workflows", "HTTPS")
+    Rel(workflow_manager, task_scheduler, "Distributes tasks")
+    Rel(task_scheduler, state_manager, "Updates coordination state")
+
+    Rel(workflow_manager, document_agent, "Assigns document tasks")
+    Rel(workflow_manager, research_agent, "Assigns research tasks")
+    Rel(workflow_manager, drafting_agent, "Assigns drafting tasks")
+    Rel(workflow_manager, review_agent, "Assigns review tasks")
+    Rel(workflow_manager, case_agent, "Assigns case management tasks")
+
+    Rel(document_agent, research_agent, "Shares extracted insights", "via Communication Hub")
+    Rel(research_agent, drafting_agent, "Provides legal precedents", "via Communication Hub")
+    Rel(drafting_agent, review_agent, "Submits drafts for review", "via Communication Hub")
+    Rel(review_agent, case_agent, "Updates case status", "via Communication Hub")
+
+    Rel(document_agent, vector_store, "Queries legal knowledge", "Vector Search")
+    Rel(research_agent, vector_store, "Retrieves precedents", "Vector Search")
+    Rel(drafting_agent, vector_store, "Accesses templates", "Vector Search")
+
+    Rel(state_manager, workflow_state, "Persists agent state", "Redis Protocol")
+    Rel(communication_hub, workflow_state, "Manages message queues", "Redis Protocol")
+
+    Rel(document_agent, ai_services, "Legal analysis requests", "HTTPS")
+    Rel(research_agent, ai_services, "Research queries", "HTTPS")
+    Rel(drafting_agent, ai_services, "Document generation", "HTTPS")
+    Rel(review_agent, ai_services, "Compliance checking", "HTTPS")
+    Rel(case_agent, ai_services, "Timeline analysis", "HTTPS")
+```
+
 ## Support
 
 `Shirts` is designed to work across multiple platforms:
