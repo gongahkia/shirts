@@ -15,6 +15,9 @@ AI Agent-based Legal Workflow Assistant that automates legal processes through i
 
 ## Usage
 
+> [!IMPORTANT]
+> Please read the [legal disclaimer](#legal) before using `Shirts`.
+
 The below instructions are for locally hosting `Shirts`.
 
 1. First execute the below.
